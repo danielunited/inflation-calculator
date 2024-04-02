@@ -33,19 +33,20 @@ async function calculateValue() {
     let value = parseFloat(params.amount);
     const startYear = parseInt(params.year);
     const currentYear = new Date().getFullYear();
-    let compoundedRate = 1;
 
     for (let year = startYear; year < currentYear; year++) {
       if (rates.hasOwnProperty(year.toString())) {
-        compoundedRate *= 1 + rates[year.toString()];
+        value *= 1 + rates[year.toString()];
+        if (year === 1984) {
+          // Adjust for the currency change from Old Shekel to New Shekel
+          value /= 1000; // Applying the conversion rate of 1000:1 from Old to New Shekel
+        }
       } else {
-        // Handle missing data for a year; log, break, or use a default rate
         console.log(`No data for year ${year}, using last available rate.`);
         break;
       }
     }
 
-    value *= compoundedRate;
     calculatedValue.value = value.toFixed(2);
   } else {
     console.error('Failed to load inflation rates data');
