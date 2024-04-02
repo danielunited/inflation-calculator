@@ -27,7 +27,7 @@ onMounted(async () => {
 });
 
 async function calculateValue() {
-  const response = await fetch('/data.json'); // Adjust path if necessary
+  const response = await fetch('/data.json');
   if (response.ok) {
     const rates = await response.json();
     let value = parseFloat(params.amount);
@@ -36,12 +36,12 @@ async function calculateValue() {
     let compoundedRate = 1;
 
     for (let year = startYear; year < currentYear; year++) {
-      if (rates.hasOwnProperty(year)) {
-        compoundedRate *= 1 + rates[year] / 100;
+      if (rates.hasOwnProperty(year.toString())) {
+        compoundedRate *= 1 + rates[year.toString()];
       } else {
-        // If data for a particular year is missing, break or handle as per your requirement
+        // Handle missing data for a year; log, break, or use a default rate
         console.log(`No data for year ${year}, using last available rate.`);
-        break; // Optionally break or continue based on your preference
+        break;
       }
     }
 
