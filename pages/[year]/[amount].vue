@@ -1,13 +1,13 @@
 <template>
   <div class="container">
-    <h1>Inflation Calculation Result</h1>
+    <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Inflation Calculation Result</h1>
     <p v-if="errorMessage">{{ errorMessage }}</p>
     <p v-else-if="calculatedValue">
       If you had <strong>{{ params.amount }} ILS</strong> in <strong>{{ params.year }}</strong
       >, it would be worth approximately <strong>{{ calculatedValue }} ILS</strong> today.
     </p>
     <p v-else>Loading...</p>
-    <button @click="goBack">Calculate Again</button>
+    <UButton @click="goBack" size="xl">Calculate Again</UButton>
   </div>
 </template>
 
