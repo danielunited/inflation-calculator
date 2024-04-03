@@ -1,22 +1,21 @@
 <template>
-  <div class="container">
-    <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">ILS Inflation Calculator</h1>
+  <div class="container" dir="rtl">
+    <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">מחשבון אינפלציה</h1>
     <form @submit.prevent="submitForm">
       <div class="field">
-        <USelect id="year" v-model="selectedYear" :options="yearOptions" required placeholder="Select a year" label="Year" size="xl" />
+        <USelect id="year" v-model="selectedYear" :options="yearOptions" required placeholder="בחר שנה" label="שנה" size="xl" />
       </div>
       <div class="field">
-        <UInput type="number" id="amount" v-model="amount" placeholder="Enter amount" required label="Amount in ILS" size="xl" />
+        <UInput type="number" id="amount" v-model="amount" placeholder="הכנס סכום בשקלים" required label='סכום בש"ח"' size="xl" />
       </div>
-      <UButton type="submit" size="xl">Calculate</UButton>
+      <UButton type="submit" size="xl" block>חשב</UButton>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-// import { USelect, UInput, UButton } from 'nuxt-ui';
 
 const router = useRouter();
 const years = ref([]);
@@ -33,7 +32,7 @@ onMounted(async () => {
     const rates = await response.json();
     years.value = Object.keys(rates).sort((a, b) => a - b);
   } else {
-    console.error('Failed to load years data');
+    console.error('נכשל טעינת נתוני השנים');
   }
 });
 
@@ -41,7 +40,7 @@ const submitForm = () => {
   if (selectedYear.value && amount.value) {
     router.push(`/${selectedYear.value}/${amount.value}`);
   } else {
-    alert('Please fill in all fields.');
+    alert('אנא מלא את כל השדות.');
   }
 };
 </script>

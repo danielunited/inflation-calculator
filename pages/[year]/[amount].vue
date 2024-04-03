@@ -1,13 +1,14 @@
 <template>
-  <div class="container">
-    <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Inflation Calculation Result</h1>
+  <div class="container" dir="rtl">
+    <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">מחשבון אינפלציה</h1>
     <p v-if="errorMessage">{{ errorMessage }}</p>
-    <p v-else-if="calculatedValue">
-      If you had <strong>{{ params.amount }} ILS</strong> in <strong>{{ params.year }}</strong
-      >, it would be worth approximately <strong>{{ calculatedValue }} ILS</strong> today.
+    <p v-else-if="calculatedValue && cumulativeRate">
+      אם היו לך <strong>{{ params.amount }} ש"ח</strong> בשנת <strong>{{ params.year }}</strong
+      >, הם היו שווים <strong>{{ calculatedValue }} ש"ח</strong> היום. לפיכך, שיעור האינפלציה המצטבר הוא <strong>{{ cumulativeRate }}</strong
+      >.
     </p>
-    <p v-else>Loading...</p>
-    <UButton @click="goBack" size="xl">Calculate Again</UButton>
+    <p v-else>טוען...</p>
+    <UButton @click="goBack" size="xl" class="mt-4" block>חישוב נוסף</UButton>
   </div>
 </template>
 
@@ -20,6 +21,7 @@ const router = useRouter();
 const params = route.params;
 
 const calculatedValue = ref(null);
+const cumulativeRate = ref(0);
 const errorMessage = ref('');
 
 onMounted(async () => {
@@ -33,24 +35,29 @@ async function calculateValue() {
     let value = parseFloat(params.amount);
     const startYear = parseInt(params.year);
     const currentYear = new Date().getFullYear();
+    let cumulativeRateValue = 1; // Start with a base of 1 (100%)
 
     for (let year = startYear; year < currentYear; year++) {
       if (rates.hasOwnProperty(year.toString())) {
-        value *= 1 + rates[year.toString()];
+        const rate = rates[year.toString()];
+        value *= 1 + rate;
+        cumulativeRateValue *= 1 + rate;
         if (year === 1984) {
           // Adjust for the currency change from Old Shekel to New Shekel
           value /= 1000; // Applying the conversion rate of 1000:1 from Old to New Shekel
         }
       } else {
-        console.log(`No data for year ${year}, using last available rate.`);
+        console.log(`אין נתונים לשנה ${year}, משתמש בשיעור האחרון הזמין.`);
         break;
       }
     }
 
-    calculatedValue.value = value.toFixed(2);
+    // Formatting values
+    calculatedValue.value = new Intl.NumberFormat('en-US').format(value.toFixed(0));
+    cumulativeRate.value = new Intl.NumberFormat('en-US').format(((cumulativeRateValue - 1) * 100).toFixed(2)) + '%';
   } else {
-    console.error('Failed to load inflation rates data');
-    calculatedValue.value = 'Error: Failed to load data.';
+    console.error('נכשל טעינת נתוני קצבי האינפלציה');
+    errorMessage.value = 'שגיאה: נכשל טעינת הנתונים.';
   }
 }
 
