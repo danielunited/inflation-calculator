@@ -3,10 +3,21 @@
     <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">מחשבון אינפלציה</h1>
     <form @submit.prevent="submitForm">
       <div class="field">
-        <USelect id="year" v-model="selectedYear" :options="yearOptions" required placeholder="בחר שנה" label="שנה" size="xl" />
+        <UInputMenu v-model="selectedYear" :options="yearOptions" placeholder="בחר שנה" label="שנה" size="xl" :popper="{ placement: 'bottom-start' }" required autofocus />
       </div>
       <div class="field">
-        <UInput type="number" id="amount" v-model="amount" placeholder="הכנס סכום בשקלים" required label='סכום בש"ח"' size="xl" />
+        <UInput
+          type="text"
+          id="amount"
+          v-model="rawAmount"
+          :value="amount"
+          @input="rawAmount = $event.target.value"
+          placeholder="הכנס סכום בשקלים"
+          required
+          label='סכום בש"ח"'
+          size="xl"
+          autocomplete="off"
+        />
       </div>
       <UButton type="submit" size="xl" block>חשב</UButton>
     </form>
@@ -21,24 +32,41 @@ const router = useRouter();
 const years = ref([]);
 const selectedYear = ref('');
 const amount = ref('');
+let rawAmount = ref('');
 
 // Derived state to format years for USelect options
-const yearOptions = computed(() => years.value.map((year) => ({ label: year, value: year })));
+const yearOptions = computed(() => years.value.map((year) => year.toString()));
 
 // Fetch the available years from your data.json when the component mounts
 onMounted(async () => {
   const response = await fetch('/data.json');
   if (response.ok) {
     const rates = await response.json();
-    years.value = Object.keys(rates).sort((a, b) => a - b);
+    years.value = Object.keys(rates)
+      .map(Number)
+      .filter((year) => year >= 1986)
+      .sort((a, b) => a - b)
+      .map(String); // Convert back to strings for the input menu
   } else {
-    console.error('נכשל טעינת נתוני השנים');
+    console.error('Failed to load year data');
   }
 });
 
+watch(
+  rawAmount,
+  (newValue) => {
+    // Strip non-numeric characters (preserve decimal point)
+    const numericValue = newValue.replace(/[^\d.]/g, '');
+    // Format the number with thousands separator
+    amount.value = new Intl.NumberFormat('he-IL').format(parseFloat(numericValue) || 0);
+  },
+  { immediate: true }
+);
+
 const submitForm = () => {
-  if (selectedYear.value && amount.value) {
-    router.push(`/${selectedYear.value}/${amount.value}`);
+  if (selectedYear.value && rawAmount.value) {
+    const unformattedAmount = rawAmount.value.replace(/[^\d.]/g, ''); // Ensure we use unformatted value for calculations/navigation
+    router.push(`/${selectedYear.value}/${unformattedAmount}`);
   } else {
     alert('אנא מלא את כל השדות.');
   }
