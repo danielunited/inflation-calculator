@@ -1,5 +1,5 @@
 <template>
-  <div class="container" dir="rtl">
+  <div class="container">
     <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">מחשבון אינפלציה</h1>
     <form @submit.prevent="submitForm">
       <div class="field">
@@ -43,6 +43,29 @@ const submitForm = () => {
     alert('אנא מלא את כל השדות.');
   }
 };
+
+useHead({
+  title: 'מחשבון אינפלציה',
+  meta: [
+    { charset: 'utf-8' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { name: 'description', content: 'מחשבון אינפלציה מאפשר לך לחשב את ערך הכסף שלך בהתאם לשינויים במדד האינפלציה. הזן סכום ושנה וקבל את הערך המתואם.' },
+    { name: 'keywords', content: 'מחשבון אינפלציה, אינפלציה, מדד המחירים לצרכן, הצמדה, חישוב אינפלציה' },
+    { property: 'og:title', content: 'מחשבון אינפלציה | חשב את הערך המתואם לאינפלציה של כספך' },
+    { property: 'og:description', content: 'מחשבון אינפלציה מאפשר לך לחשב את ערך הכסף שלך בהתאם לשינויים במדד האינפלציה. הזן סכום ושנה וקבל את הערך המתואם.' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:image', content: '/israeli-shekel.jpeg' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+  ],
+  link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
+  htmlAttrs: {
+    lang: 'he',
+    dir: 'rtl',
+  },
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk}` : 'מחשבון אינפלציה';
+  },
+});
 </script>
 
 <style>
