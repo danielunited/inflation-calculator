@@ -15,6 +15,7 @@
     </div>
     <p v-else>טוען...</p>
     <UButton @click="goBack" size="xl" class="mt-4" block>חישוב נוסף</UButton>
+    <InflationDataAccordion :data="transformedRatesData" class="mt-4" />
   </div>
 </template>
 
@@ -32,6 +33,7 @@ const bankValue = ref('');
 const cumulativeRate = ref('');
 const bankLossPercentage = ref('');
 const errorMessage = ref('');
+const transformedRatesData = ref([]);
 
 function formatNumber(number) {
   return new Intl.NumberFormat('he-IL').format(number);
@@ -47,6 +49,11 @@ async function calculateValue() {
   }
 
   const rates = await response.json();
+  transformedRatesData.value = Object.keys(rates).map((year) => ({
+    year,
+    inflationRate: rates[year],
+  }));
+
   let value = parseFloat(params.value.amount);
   formattedAmount.value = formatNumber(value);
   const startYear = parseInt(params.value.year);
