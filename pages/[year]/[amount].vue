@@ -1,18 +1,16 @@
 <template>
-  <div class="container" dir="rtl">
+  <div class="container">
     <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">מחשבון אינפלציה</h1>
     <p v-if="errorMessage">{{ errorMessage }}</p>
     <div v-else-if="calculatedValue && cumulativeRate" class="flex flex-col gap-4">
       <h2>
-        💸 כח הקנייה של <strong>{{ formattedAmount }} ש"ח</strong> ב-{{ params.year }} שווה ערך ל-<strong>{{ calculatedValue }} ש"ח</strong> של היום.
+        💸 כח הקנייה של <strong>{{ formattedAmount }} ש"ח</strong> ב-{{ params.year }} שווה ערך ל-<strong>{{ calculatedValue }} ש"ח</strong> של היום
       </h2>
       <h2>
-        📈 האינפלציה הצטברה בתקופה הזו לשיעור של <strong>{{ cumulativeRate }}</strong
-        >.
+        📈 מאז האינפלציה (מדד המחירים לצרכן) עלה בשיעור של <strong>{{ cumulativeRate }}</strong>
       </h2>
       <h2>
-        📉 במקביל, אם הכסף הזה שכב בעו״ש ערכו נשחק ב-<strong>{{ bankLossPercentage }}</strong
-        >.
+        📉 במידה ובתקופה הזו הכסף שכב בעו״ש ערכו נשחק ב-<strong>{{ bankLossPercentage }}</strong>
       </h2>
     </div>
     <p v-else>טוען...</p>
@@ -85,7 +83,7 @@ watchEffect(() => {
   const amount = params.value.amount;
   const year = params.value.year;
   const pageTitle = `כמה היו שווים ${formattedAmount.value} שח ב-${year}? | מחשבון אינפלציה`;
-  const pageDescription = `מחשב את ערך ${amount} ש"ח משנת ${year} במונחים של הכסף היום, בהתחשב בשיעורי האינפלציה. גלה כמה הכסף שלך שווה בזמן.`;
+  const pageDescription = `מחשב את ערך ${amount} שח משנת ${year} במונחים של הכסף היום, בהתחשב בשיעורי האינפלציה. גלה כמה הכסף שלך שווה בזמן.`;
 
   useHead({
     title: pageTitle,
@@ -95,8 +93,10 @@ watchEffect(() => {
       { property: 'og:description', content: pageDescription },
       { property: 'og:type', content: 'website' },
       { property: 'og:image', content: '/israeli-shekel.jpeg' },
-      // { property: 'og:url', content: `https://www.inflationcalculator.co.il/${year}/${amount}` },
       { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: pageTitle },
+      { name: 'twitter:description', content: pageDescription },
+      { name: 'twitter:image', content: '/israeli-shekel.jpeg' },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
     htmlAttrs: {

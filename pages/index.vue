@@ -3,7 +3,17 @@
     <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">מחשבון אינפלציה</h1>
     <form @submit.prevent="submitForm">
       <div class="field">
-        <UInputMenu v-model="selectedYear" :options="yearOptions" placeholder="בחר שנה להשוואה" label="שנה" size="xl" :popper="{ placement: 'bottom-start' }" required autofocus />
+        <UInputMenu
+          v-model="selectedYear"
+          :options="yearOptions"
+          placeholder="בחר שנה"
+          label="שנה"
+          size="xl"
+          :popper="{ placement: 'bottom-start' }"
+          required
+          autofocus
+          icon="i-heroicons-calendar-20-solid"
+        />
       </div>
       <div class="field">
         <UInput
@@ -17,6 +27,7 @@
           label='סכום בש"ח"'
           size="xl"
           autocomplete="off"
+          icon="i-heroicons-wallet-20-solid"
         />
       </div>
       <UButton type="submit" size="xl" block>חשב</UButton>
@@ -81,13 +92,16 @@ useHead({
   meta: [
     { charset: 'utf-8' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-    { name: 'description', content: 'מחשבון אינפלציה מאפשר לך לחשב את ערך הכסף שלך בהתאם לשינויים במדד האינפלציה. הזן סכום ושנה וקבל את הערך המתואם.' },
+    { name: 'description', content: 'חשב את כוח הקנייה של הכסף במהלך השנים, בהתאם לשינויי האינפלציה ומדד המחירים לצרכן' },
     { name: 'keywords', content: 'מחשבון אינפלציה, אינפלציה, מדד המחירים לצרכן, הצמדה, חישוב אינפלציה' },
     { property: 'og:title', content: 'מחשבון אינפלציה | חשב את הערך המתואם לאינפלציה של כספך' },
-    { property: 'og:description', content: 'מחשבון אינפלציה מאפשר לך לחשב את ערך הכסף שלך בהתאם לשינויים במדד האינפלציה. הזן סכום ושנה וקבל את הערך המתואם.' },
+    { property: 'og:description', content: 'מחשבון אינפלציה מאפשר לך לחשב את כוח הקנייה של הכסף שלך בהתאם לשינויי האינפלציה ומדד המחירים לצרכן. הזן סכום, שנה וקבל את הערך המדוייק.' },
     { property: 'og:type', content: 'website' },
     { property: 'og:image', content: '/israeli-shekel.jpeg' },
     { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: 'מחשבון אינפלציה' },
+    { name: 'twitter:description', content: 'מחשבון אינפלציה מאפשר לך לחשב את כוח הקנייה של הכסף שלך בהתאם לשינויי האינפלציה ומדד המחירים לצרכן. הזן סכום, שנה וקבל את הערך המדוייק.' },
+    { name: 'twitter:image', content: '/israeli-shekel.jpeg' },
   ],
   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
   htmlAttrs: {
