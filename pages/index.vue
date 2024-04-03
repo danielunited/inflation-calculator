@@ -3,7 +3,7 @@
     <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">מחשבון אינפלציה</h1>
     <form @submit.prevent="submitForm">
       <div class="field">
-        <UInputMenu v-model="selectedYear" :options="yearOptions" placeholder="בחר שנה" label="שנה" size="xl" :popper="{ placement: 'bottom-start' }" required autofocus />
+        <UInputMenu v-model="selectedYear" :options="yearOptions" placeholder="בחר שנה להשוואה" label="שנה" size="xl" :popper="{ placement: 'bottom-start' }" required autofocus />
       </div>
       <div class="field">
         <UInput
@@ -12,7 +12,7 @@
           v-model="rawAmount"
           :value="amount"
           @input="rawAmount = $event.target.value"
-          placeholder="הכנס סכום בשקלים"
+          placeholder="הזן סכום בשקלים"
           required
           label='סכום בש"ח"'
           size="xl"
@@ -55,10 +55,14 @@ onMounted(async () => {
 watch(
   rawAmount,
   (newValue) => {
-    // Strip non-numeric characters (preserve decimal point)
-    const numericValue = newValue.replace(/[^\d.]/g, '');
-    // Format the number with thousands separator
-    amount.value = new Intl.NumberFormat('he-IL').format(parseFloat(numericValue) || 0);
+    if (newValue === '') {
+      // If the new value is an empty string, keep the display also empty to show the placeholder
+      amount.value = '';
+    } else {
+      // Otherwise, strip non-numeric characters (preserve decimal point) and format
+      const numericValue = newValue.replace(/[^\d.]/g, '');
+      amount.value = new Intl.NumberFormat('he-IL').format(parseFloat(numericValue) || 0);
+    }
   },
   { immediate: true }
 );
