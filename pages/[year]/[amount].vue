@@ -2,18 +2,19 @@
   <div class="container" dir="rtl">
     <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">מחשבון אינפלציה</h1>
     <p v-if="errorMessage">{{ errorMessage }}</p>
-    <ul v-else-if="calculatedValue && cumulativeRate">
-      <li>
-        כח הקנייה של <strong>{{ formattedAmount }} ש"ח</strong> ב-{{ params.year }} שווה ערך ל-<strong>{{ calculatedValue }} ש"ח</strong> של היום.
-      </li>
-      <li>
-        לעומת זאת, אם הכסף היה יושב בחשבון הבנק הוא היה שווה ערך ל-<strong>{{ bankValue }} ש"ח</strong> היום.
-      </li>
-      <li>
-        לפיכך, שיעור האינפלציה המצטבר הוא <strong>{{ cumulativeRate }}</strong
+    <div v-else-if="calculatedValue && cumulativeRate" class="flex flex-col gap-4">
+      <h2>
+        💸 כח הקנייה של <strong>{{ formattedAmount }} ש"ח</strong> ב-{{ params.year }} שווה ערך ל-<strong>{{ calculatedValue }} ש"ח</strong> של היום.
+      </h2>
+      <h2>
+        📈 האינפלציה הצטברה בתקופה הזו לשיעור של <strong>{{ cumulativeRate }}</strong
         >.
-      </li>
-    </ul>
+      </h2>
+      <h2>
+        📉 במקביל, אם הכסף הזה שכב בעו״ש ערכו נשחק ב-<strong>{{ bankLossPercentage }}</strong
+        >.
+      </h2>
+    </div>
     <p v-else>טוען...</p>
     <UButton @click="goBack" size="xl" class="mt-4" block>חישוב נוסף</UButton>
   </div>
@@ -31,6 +32,7 @@ const calculatedValue = ref('');
 const formattedAmount = ref('');
 const bankValue = ref('');
 const cumulativeRate = ref('');
+const bankLossPercentage = ref('');
 const errorMessage = ref('');
 
 function formatNumber(number) {
@@ -70,6 +72,7 @@ async function calculateValue() {
 
   calculatedValue.value = new Intl.NumberFormat('he-IL').format((value * cumulativeInflation).toFixed(0));
   bankValue.value = new Intl.NumberFormat('he-IL').format((value / cumulativeInflation).toFixed(0));
+  bankLossPercentage.value = ((1 - 1 / cumulativeInflation) * 100).toFixed(2) + '%';
   cumulativeRate.value = ((cumulativeInflation - 1) * 100).toFixed(2) + '%';
 }
 
