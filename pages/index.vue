@@ -62,9 +62,7 @@ useHead({
     lang: 'he',
     dir: 'rtl',
   },
-  titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk}` : 'מחשבון אינפלציה';
-  },
+  titleTemplate: '%s',
 });
 </script>
 
