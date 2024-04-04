@@ -15,7 +15,7 @@
     </div>
     <p v-else>טוען...</p>
     <UButton @click="goBack" size="xl" class="mt-4" block>חישוב נוסף</UButton>
-    <InflationDataAccordion :data="transformedRatesData" class="mt-4" />
+    <InflationDataAccordion class="mt-4" />
   </div>
 </template>
 

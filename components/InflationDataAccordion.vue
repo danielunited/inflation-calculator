@@ -12,22 +12,14 @@
 </template>
 
 <script setup>
-const props = defineProps({
-  data: Array,
-});
+import { onMounted, ref } from 'vue';
 
 const inflationDataSlotName = 'inflation-data';
 const columns = ref([
   { key: 'year', label: 'שנה' },
   { key: 'inflationRate', label: 'שינוי במדד המחירים לצרכן (אינפלציה)' },
 ]);
-
-const inflationData = computed(() => {
-  return props.data.map((item) => ({
-    year: item.year,
-    inflationRate: `${(item.inflationRate * 100).toFixed(2)}%`,
-  }));
-});
+const inflationData = ref([]);
 
 const accordionItems = ref([
   {
@@ -36,4 +28,21 @@ const accordionItems = ref([
     slot: inflationDataSlotName,
   },
 ]);
+
+async function fetchData() {
+  try {
+    const response = await fetch('/data.json');
+    if (!response.ok) throw new Error('Failed to load data');
+
+    const rates = await response.json();
+    inflationData.value = Object.keys(rates).map((year) => ({
+      year,
+      inflationRate: `${(rates[year] * 100).toFixed(2)}%`,
+    }));
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+onMounted(fetchData);
 </script>
