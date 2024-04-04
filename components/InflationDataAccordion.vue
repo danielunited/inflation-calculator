@@ -19,7 +19,7 @@ const props = defineProps({
 const inflationDataSlotName = 'inflation-data';
 const columns = ref([
   { key: 'year', label: 'שנה' },
-  { key: 'inflationRate', label: 'שיעור האינפלציה' },
+  { key: 'inflationRate', label: 'שינוי במדד המחירים לצרכן (אינפלציה)' },
 ]);
 
 const inflationData = computed(() => {
@@ -31,7 +31,7 @@ const inflationData = computed(() => {
 
 const accordionItems = ref([
   {
-    label: 'נתוני אינפלציה (בחישוב שנתי)',
+    label: 'נתוני אינפלציה בחישוב שנתי',
     defaultOpen: false,
     slot: inflationDataSlotName,
   },
