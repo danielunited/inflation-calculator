@@ -4,17 +4,18 @@
     <p v-if="errorMessage">{{ errorMessage }}</p>
     <div v-else-if="calculatedValue && cumulativeRate" class="flex flex-col gap-4">
       <h2>
-        💸 כח הקנייה של <strong>{{ formattedAmount }} ש"ח</strong> ב-{{ params.year }} שווה ערך ל-<strong>{{ calculatedValue }} ש"ח</strong> של היום
+        💸 כח הקנייה של <strong>{{ formattedAmount }} ש"ח ב-{{ params.year }}</strong> שווה ערך ל-<strong>{{ calculatedValue }} שקלים של היום</strong>
       </h2>
       <h2>
-        📈 מאז האינפלציה (מדד המחירים לצרכן) עלה בשיעור של <strong>{{ cumulativeRate }}</strong>
+        📈 מאז האינפלציה עלתה בשיעור של <strong>{{ cumulativeRate }}</strong>
       </h2>
       <h2>
-        📉 במידה ובתקופה הזו הכסף שכב בעו״ש ערכו נשחק ב-<strong>{{ bankLossPercentage }}</strong>
+        📉 כסף ששכב בעו״ש בתקופה הזו איבד <strong>{{ bankLossPercentage }}</strong> מערכו
       </h2>
     </div>
     <p v-else>טוען...</p>
     <UButton @click="goBack" size="xl" class="mt-4" block>חישוב נוסף</UButton>
+    <InflationDataAccordion class="mt-4" />
   </div>
 </template>
 
@@ -32,6 +33,7 @@ const bankValue = ref('');
 const cumulativeRate = ref('');
 const bankLossPercentage = ref('');
 const errorMessage = ref('');
+const transformedRatesData = ref([]);
 
 function formatNumber(number) {
   return new Intl.NumberFormat('he-IL').format(number);
@@ -47,6 +49,11 @@ async function calculateValue() {
   }
 
   const rates = await response.json();
+  transformedRatesData.value = Object.keys(rates).map((year) => ({
+    year,
+    inflationRate: rates[year],
+  }));
+
   let value = parseFloat(params.value.amount);
   formattedAmount.value = formatNumber(value);
   const startYear = parseInt(params.value.year);

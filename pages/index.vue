@@ -1,12 +1,13 @@
 <template>
   <div class="container">
     <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">מחשבון אינפלציה</h1>
+    <h2 class="mb-6 text-md font-normal text-gray-500 lg:text-lg dark:text-gray-400">חשב את כוח הקנייה של השקל הישראלי במהלך השנים, בהתאם לשינויי האינפלציה ומדד המחירים לצרכן</h2>
     <form @submit.prevent="submitForm">
       <div class="field">
         <UInputMenu
           v-model="selectedYear"
           :options="yearOptions"
-          placeholder="בחר שנה"
+          placeholder="בחר שנה להשוואה"
           label="שנה"
           size="xl"
           :popper="{ placement: 'bottom-start' }"
@@ -31,6 +32,7 @@
         />
       </div>
       <UButton type="submit" size="xl" block>חשב</UButton>
+      <InflationDataAccordion class="mt-4" />
     </form>
   </div>
 </template>
@@ -92,7 +94,7 @@ useHead({
   meta: [
     { charset: 'utf-8' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-    { name: 'description', content: 'חשב את כוח הקנייה של הכסף במהלך השנים, בהתאם לשינויי האינפלציה ומדד המחירים לצרכן' },
+    { name: 'description', content: 'חשב את כוח הקנייה של השקל הישראלי במהלך השנים, בהתאם לשינויי האינפלציה ומדד המחירים לצרכן' },
     { name: 'keywords', content: 'מחשבון אינפלציה, אינפלציה, מדד המחירים לצרכן, הצמדה, חישוב אינפלציה' },
     { property: 'og:title', content: 'מחשבון אינפלציה | חשב את הערך המתואם לאינפלציה של כספך' },
     { property: 'og:description', content: 'מחשבון אינפלציה מאפשר לך לחשב את כוח הקנייה של הכסף שלך בהתאם לשינויי האינפלציה ומדד המחירים לצרכן. הזן סכום, שנה וקבל את הערך המדוייק.' },
