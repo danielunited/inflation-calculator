@@ -57,6 +57,14 @@ async function calculateValue() {
   let value = parseFloat(params.value.amount);
   formattedAmount.value = formatNumber(value);
   const startYear = parseInt(params.value.year);
+  if (startYear < 1986) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'השנה אינה נתמכת',
+      message: 'שנים לפני 1986 אינן נתמכות',
+      fatal: true,
+    });
+  }
   const currentYear = new Date().getFullYear();
   let cumulativeInflation = 1;
   let cumulativeRateValue = 1;
