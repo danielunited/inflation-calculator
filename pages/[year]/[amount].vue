@@ -7,7 +7,7 @@
         💸 כח הקנייה של <strong>{{ formattedAmount }} ש"ח ב-{{ params.year }}</strong> שווה ערך ל-<strong>{{ calculatedValue }} שקלים היום</strong>
       </h2>
       <h2>
-        📈 מאז האינפלציה עלתה בשיעור של <strong>{{ cumulativeRate }}</strong>
+        📈 מאז {{ params.year }} האינפלציה עלתה ב-<strong>{{ cumulativeRate }}</strong>
       </h2>
       <h2>
         📉 כסף ששכב בעו״ש בתקופה הזו איבד <strong>{{ bankLossPercentage }}</strong> מערכו
