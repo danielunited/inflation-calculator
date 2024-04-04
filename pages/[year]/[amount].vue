@@ -4,7 +4,7 @@
     <p v-if="errorMessage">{{ errorMessage }}</p>
     <div v-else-if="calculatedValue && cumulativeRate" class="flex flex-col gap-4">
       <h2>
-        💸 כח הקנייה של <strong>{{ formattedAmount }} ש"ח ב-{{ params.year }}</strong> שווה ערך ל-<strong>{{ calculatedValue }} שקלים של היום</strong>
+        💸 כח הקנייה של <strong>{{ formattedAmount }} ש"ח ב-{{ params.year }}</strong> שווה ערך ל-<strong>{{ calculatedValue }} שקלים היום</strong>
       </h2>
       <h2>
         📈 מאז האינפלציה עלתה בשיעור של <strong>{{ cumulativeRate }}</strong>
@@ -57,6 +57,14 @@ async function calculateValue() {
   let value = parseFloat(params.value.amount);
   formattedAmount.value = formatNumber(value);
   const startYear = parseInt(params.value.year);
+  if (startYear < 1986) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'השנה אינה נתמכת',
+      message: 'שנים לפני 1986 אינן נתמכות',
+      fatal: true,
+    });
+  }
   const currentYear = new Date().getFullYear();
   let cumulativeInflation = 1;
   let cumulativeRateValue = 1;

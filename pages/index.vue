@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">מחשבון אינפלציה</h1>
-    <h2 class="mb-6 text-md font-normal text-gray-500 lg:text-lg dark:text-gray-400">חשב את כוח הקנייה של השקל הישראלי במהלך השנים, בהתאם לשינויי האינפלציה ומדד המחירים לצרכן</h2>
+    <h2 class="mb-6 text-md font-normal text-gray-500 lg:text-lg dark:text-gray-400">חשב את כוח הקנייה של השקל הישראלי במהלך השנים והשווה אותו להיום</h2>
     <form @submit.prevent="submitForm">
       <div class="field">
         <UInputMenu
