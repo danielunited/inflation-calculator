@@ -4,7 +4,7 @@
     <p v-if="errorMessage">{{ errorMessage }}</p>
     <div v-else-if="calculatedValue && cumulativeRate" class="flex flex-col gap-4">
       <h2>
-        💸 כח הקנייה של <strong>{{ formattedAmount }} ש"ח ב-{{ params.year }}</strong> שווה ערך ל-<strong>{{ calculatedValue }} שקלים של היום</strong>
+        💸 כח הקנייה של <strong>{{ formattedAmount }} ש"ח ב-{{ params.year }}</strong> שווה ערך ל-<strong>{{ calculatedValue }} שקלים היום</strong>
       </h2>
       <h2>
         📈 מאז האינפלציה עלתה בשיעור של <strong>{{ cumulativeRate }}</strong>
