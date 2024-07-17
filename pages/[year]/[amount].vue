@@ -69,7 +69,7 @@ async function calculateValue() {
   let cumulativeInflation = 1;
   let cumulativeRateValue = 1;
 
-  for (let year = startYear; year < currentYear; year++) {
+  for (let year = startYear; year <= currentYear; year++) {
     if (rates.hasOwnProperty(year.toString())) {
       const rate = rates[year.toString()];
       cumulativeInflation *= 1 + rate;
