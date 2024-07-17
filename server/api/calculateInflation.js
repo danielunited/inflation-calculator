@@ -40,9 +40,11 @@ export default defineEventHandler(async (event) => {
     };
   } catch (err) {
     console.error('Calculation error:', err);
+    console.error('Current working directory:', process.cwd());
+    console.error('Attempted data path:', path.join(process.cwd(), 'public', 'data.json'));
     throw createError({
       statusCode: 400,
-      statusMessage: 'אירעה שגיאה בחישוב הנתונים.',
+      statusMessage: 'An error occurred during calculation.',
     });
   }
 });
