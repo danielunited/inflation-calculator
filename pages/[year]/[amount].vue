@@ -34,7 +34,7 @@ const { data: calculationResult, error: fetchError } = await useFetch('/api/calc
 });
 
 if (fetchError.value) {
-  error.value = 'An error occurred during calculation.';
+  error.value = 'אירעה שגיאה בחישוב הנתונים.';
 }
 
 // SEO

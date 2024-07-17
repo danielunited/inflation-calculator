@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 
 export default defineEventHandler(async (event) => {
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const dataPath = path.join(process.cwd(), 'public', 'data.json');
-    const ratesData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+    const ratesData = JSON.parse(await fs.readFile(dataPath, 'utf8'));
 
     let value = parseFloat(amount);
     const formattedAmount = formatNumber(value);
@@ -39,9 +39,10 @@ export default defineEventHandler(async (event) => {
       bankLossPercentage,
     };
   } catch (err) {
+    console.error('Calculation error:', err);
     throw createError({
       statusCode: 400,
-      statusMessage: err.message || 'An error occurred during calculation.',
+      statusMessage: 'אירעה שגיאה בחישוב הנתונים.',
     });
   }
 });
