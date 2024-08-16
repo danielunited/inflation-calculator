@@ -17,72 +17,38 @@
         />
       </div>
       <div class="field">
-        <UInput
-          type="text"
-          id="amount"
-          v-model="rawAmount"
-          :value="amount"
-          @input="rawAmount = $event.target.value"
-          placeholder="הזן סכום בשקלים"
-          required
-          label='סכום בש"ח"'
-          size="xl"
-          autocomplete="off"
-          icon="i-heroicons-wallet-20-solid"
-        />
+        <UInput v-model="amount" type="text" placeholder="הזן סכום בשקלים" required label='סכום בש"ח"' size="xl" autocomplete="off" icon="i-heroicons-wallet-20-solid" />
       </div>
       <UButton type="submit" size="xl" block>חשב</UButton>
-      <InflationDataAccordion class="mt-4" />
     </form>
+    <InflationDataAccordion class="mt-4" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed } from 'vue';
+import { useRouter, useHead } from '#imports';
 
 const router = useRouter();
-const years = ref([]);
 const selectedYear = ref('');
 const amount = ref('');
-let rawAmount = ref('');
 
-// Derived state to format years for USelect options
-const yearOptions = computed(() => years.value.map((year) => year.toString()));
+const { data: yearsData } = await useFetch('/api/calculateInflation?year=2023&amount=1');
 
-// Fetch the available years from your data.json when the component mounts
-onMounted(async () => {
-  const response = await fetch('/data.json');
-  if (response.ok) {
-    const rates = await response.json();
-    years.value = Object.keys(rates)
-      .map(Number)
-      .filter((year) => year >= 1986)
-      .sort((a, b) => a - b)
-      .map(String); // Convert back to strings for the input menu
-  } else {
-    console.error('Failed to load year data');
-  }
-});
-
-watch(
-  rawAmount,
-  (newValue) => {
-    if (newValue === '') {
-      // If the new value is an empty string, keep the display also empty to show the placeholder
-      amount.value = '';
-    } else {
-      // Otherwise, strip non-numeric characters (preserve decimal point) and format
-      const numericValue = newValue.replace(/[^\d.]/g, '');
-      amount.value = new Intl.NumberFormat('he-IL').format(parseFloat(numericValue) || 0);
-    }
-  },
-  { immediate: true }
+const yearOptions = computed(() =>
+  Object.keys(yearsData.value?.rates || {})
+    .filter((year) => parseInt(year) >= 1986)
+    .sort((a, b) => parseInt(a) - parseInt(b))
 );
 
+const formattedAmount = computed(() => {
+  if (!amount.value) return '';
+  return new Intl.NumberFormat('he-IL').format(parseFloat(amount.value.replace(/[^\d.]/g, '')));
+});
+
 const submitForm = () => {
-  if (selectedYear.value && rawAmount.value) {
-    const unformattedAmount = rawAmount.value.replace(/[^\d.]/g, ''); // Ensure we use unformatted value for calculations/navigation
+  if (selectedYear.value && amount.value) {
+    const unformattedAmount = amount.value.replace(/[^\d.]/g, '');
     router.push(`/${selectedYear.value}/${unformattedAmount}`);
   } else {
     alert('אנא מלא את כל השדות.');
@@ -92,8 +58,6 @@ const submitForm = () => {
 useHead({
   title: 'מחשבון אינפלציה',
   meta: [
-    { charset: 'utf-8' },
-    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     { name: 'description', content: 'חשב את כוח הקנייה של השקל הישראלי במהלך השנים, בהתאם לשינויי האינפלציה ומדד המחירים לצרכן' },
     { name: 'keywords', content: 'מחשבון אינפלציה, אינפלציה, מדד המחירים לצרכן, הצמדה, חישוב אינפלציה' },
     { property: 'og:title', content: 'מחשבון אינפלציה | חשב את הערך המתואם לאינפלציה של כספך' },
@@ -110,7 +74,6 @@ useHead({
     lang: 'he',
     dir: 'rtl',
   },
-  titleTemplate: '%s',
 });
 </script>
 

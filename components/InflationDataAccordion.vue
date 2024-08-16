@@ -12,14 +12,23 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const inflationDataSlotName = 'inflation-data';
-const columns = ref([
+const columns = [
   { key: 'year', label: 'שנה' },
   { key: 'inflationRate', label: 'שינוי במדד המחירים לצרכן (אינפלציה)' },
-]);
-const inflationData = ref([]);
+];
+
+const { data } = await useFetch('/api/calculateInflation?year=2023&amount=1');
+
+const inflationData = computed(() => {
+  const rates = data.value?.rates || {};
+  return Object.entries(rates).map(([year, rate]) => ({
+    year,
+    inflationRate: `${(rate * 100).toFixed(2)}%`,
+  }));
+});
 
 const accordionItems = ref([
   {
@@ -28,21 +37,4 @@ const accordionItems = ref([
     slot: inflationDataSlotName,
   },
 ]);
-
-async function fetchData() {
-  try {
-    const response = await fetch('/data.json');
-    if (!response.ok) throw new Error('Failed to load data');
-
-    const rates = await response.json();
-    inflationData.value = Object.keys(rates).map((year) => ({
-      year,
-      inflationRate: `${(rates[year] * 100).toFixed(2)}%`,
-    }));
-  } catch (error) {
-    console.error(error.message);
-  }
-}
-
-onMounted(fetchData);
 </script>

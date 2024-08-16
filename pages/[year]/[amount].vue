@@ -21,50 +21,58 @@
 
 <script setup>
 import { useHead, useRoute, useRouter } from '#imports';
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
 const { amount, year } = route.params;
 
-const error = ref('');
-
-const { data: calculationResult, error: fetchError } = await useFetch('/api/calculateInflation', {
+const { data: calculationResult, error } = await useFetch('/api/calculateInflation', {
   params: { amount, year },
 });
 
-if (fetchError.value) {
-  error.value = 'אירעה שגיאה בחישוב הנתונים.';
-}
+const pageTitle = computed(() => (calculationResult.value ? `כמה היו שווים ${calculationResult.value.formattedAmount} שח ב-${year}? | מחשבון אינפלציה` : 'מחשבון אינפלציה'));
 
-// SEO
-watch(
-  calculationResult,
-  (newResult) => {
-    if (newResult) {
-      useHead({
-        title: `כמה היו שווים ${newResult.formattedAmount} שח ב-${year}? | מחשבון אינפלציה`,
-        meta: [
-          { name: 'description', content: `מחשב את ערך ${newResult.formattedAmount} שח משנת ${year} במונחים של הכסף היום. שווה ל-${newResult.calculatedValue} שקלים כיום.` },
-          { property: 'og:title', content: `כמה היו שווים ${newResult.formattedAmount} שח ב-${year}? | מחשבון אינפלציה` },
-          { property: 'og:description', content: `מחשב את ערך ${newResult.formattedAmount} שח משנת ${year} במונחים של הכסף היום. שווה ל-${newResult.calculatedValue} שקלים כיום.` },
-          { property: 'og:type', content: 'website' },
-          { property: 'og:image', content: '/israeli-shekel.jpeg' },
-          { name: 'twitter:card', content: 'summary_large_image' },
-          { name: 'twitter:title', content: `כמה היו שווים ${newResult.formattedAmount} שח ב-${year}? | מחשבון אינפלציה` },
-          { name: 'twitter:description', content: `מחשב את ערך ${newResult.formattedAmount} שח משנת ${year} במונחים של הכסף היום. שווה ל-${newResult.calculatedValue} שקלים כיום.` },
-          { name: 'twitter:image', content: '/israeli-shekel.jpeg' },
-        ],
-        link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
-        htmlAttrs: {
-          lang: 'he',
-          dir: 'rtl',
-        },
-      });
-    }
+useHead({
+  title: pageTitle,
+  meta: [
+    {
+      name: 'description',
+      content: computed(() =>
+        calculationResult.value
+          ? `מחשב את ערך ${calculationResult.value.formattedAmount} שח משנת ${year} במונחים של הכסף היום. שווה ל-${calculationResult.value.calculatedValue} שקלים כיום.`
+          : 'מחשבון אינפלציה'
+      ),
+    },
+    { property: 'og:title', content: pageTitle },
+    {
+      property: 'og:description',
+      content: computed(() =>
+        calculationResult.value
+          ? `מחשב את ערך ${calculationResult.value.formattedAmount} שח משנת ${year} במונחים של הכסף היום. שווה ל-${calculationResult.value.calculatedValue} שקלים כיום.`
+          : 'מחשבון אינפלציה'
+      ),
+    },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:image', content: '/israeli-shekel.jpeg' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: pageTitle },
+    {
+      name: 'twitter:description',
+      content: computed(() =>
+        calculationResult.value
+          ? `מחשב את ערך ${calculationResult.value.formattedAmount} שח משנת ${year} במונחים של הכסף היום. שווה ל-${calculationResult.value.calculatedValue} שקלים כיום.`
+          : 'מחשבון אינפלציה'
+      ),
+    },
+    { name: 'twitter:image', content: '/israeli-shekel.jpeg' },
+  ],
+  link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
+  htmlAttrs: {
+    lang: 'he',
+    dir: 'rtl',
   },
-  { immediate: true }
-);
+});
 
 const goBack = () => {
   router.push('/');
