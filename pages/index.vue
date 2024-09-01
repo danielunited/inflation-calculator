@@ -17,7 +17,18 @@
         />
       </div>
       <div class="field">
-        <UInput v-model="amount" type="text" placeholder="הזן סכום בשקלים" required label='סכום בש"ח"' size="xl" autocomplete="off" icon="i-heroicons-wallet-20-solid" />
+        <UInput
+          v-model="rawAmount"
+          :value="amount"
+          type="text"
+          placeholder="הזן סכום בשקלים"
+          required
+          label='סכום בש"ח"'
+          size="xl"
+          autocomplete="off"
+          icon="i-heroicons-wallet-20-solid"
+          @input="handleAmountInput"
+        />
       </div>
       <UButton type="submit" size="xl" block>חשב</UButton>
     </form>
@@ -26,12 +37,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRouter, useHead } from '#imports';
+import { useFetch, useHead, useRouter } from '#imports';
+import { computed, ref, watch } from 'vue';
 
 const router = useRouter();
 const selectedYear = ref('');
 const amount = ref('');
+const rawAmount = ref('');
 
 const { data: yearsData } = await useFetch('/api/calculateInflation?year=2023&amount=1');
 
@@ -41,14 +53,26 @@ const yearOptions = computed(() =>
     .sort((a, b) => parseInt(a) - parseInt(b))
 );
 
-const formattedAmount = computed(() => {
-  if (!amount.value) return '';
-  return new Intl.NumberFormat('he-IL').format(parseFloat(amount.value.replace(/[^\d.]/g, '')));
-});
+const handleAmountInput = (event) => {
+  rawAmount.value = event.target.value;
+};
+
+watch(
+  rawAmount,
+  (newValue) => {
+    if (newValue === '') {
+      amount.value = '';
+    } else {
+      const numericValue = newValue.replace(/[^\d.]/g, '');
+      amount.value = new Intl.NumberFormat('he-IL').format(parseFloat(numericValue) || 0);
+    }
+  },
+  { immediate: true }
+);
 
 const submitForm = () => {
-  if (selectedYear.value && amount.value) {
-    const unformattedAmount = amount.value.replace(/[^\d.]/g, '');
+  if (selectedYear.value && rawAmount.value) {
+    const unformattedAmount = rawAmount.value.replace(/[^\d.]/g, '');
     router.push(`/${selectedYear.value}/${unformattedAmount}`);
   } else {
     alert('אנא מלא את כל השדות.');
