@@ -14,7 +14,7 @@
     "@vercel/analytics": "^1.2.2",
     "nuxt": "^3.11.1",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.4.5"
   },
   "devDependencies": {
     "@nuxtjs/seo": "latest"
